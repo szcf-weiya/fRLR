@@ -2,4 +2,4 @@ language: r
 sudo: true
 cache: packages
 apt_packages:
-  - gsl
+  - libgsl0ldbl
