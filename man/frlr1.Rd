@@ -1,39 +1,29 @@
-\name{frlr2}
-\alias{frlr2}
+\name{frlr1}
+\alias{frlr1}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Fit Repeated Linear Regressions with Two Variables
+Fit Repeated Linear Regressions with One Variable
 }
 \description{
-Fit a set of linear regressions which differ only in two variables.
+Fit a set of linear regressions which differ only in one variable.
 }
 \usage{
-frlr2(R_X, R_idx1, R_idx2, R_Y, R_COV)
+frlr1(R_X, R_Y, R_COV)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{R_X}{
 the observation matrix
 }
-  \item{R_idx1}{
-the first identical feature
-}
-  \item{R_idx2}{
-the second identical feature
-}
   \item{R_Y}{
-the response variable
+the response
 }
   \item{R_COV}{
 common variables
 }
 }
+
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
 the fitting results for each regression.
 }
 \references{
@@ -43,17 +33,15 @@ the fitting results for each regression.
 Lijun Wang
 }
 
+%% ~Make other sections like Warning with \section{Warning }{....} ~
+
 \examples{
 # library(fRLR)
 # set.seed(123)
 # X = matrix(rnorm(50), 10, 5)
 # Y = rnorm(10)
 # COV = matrix(rnorm(40), 10, 4)
-# 
-# idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)-1
-# idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)-1
-# 
-# frlr2(t(X), idx1, idx2, Y, t(COV))
+# frlr1(X, Y, COV)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

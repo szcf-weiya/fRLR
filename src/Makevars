@@ -1,8 +1,0 @@
-# set by configure
-GSL_CFLAGS = $(shell gsl-config --cflags)
-GSL_LIBS   = $(shell gsl-config --libs)
-
-# combine with standard arguments for R
-PKG_CPPFLAGS = $(GSL_CFLAGS) -I../inst/include -fopenmp
-PKG_LIBS = $(GSL_LIBS) 
-
