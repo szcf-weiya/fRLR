@@ -1,0 +1,4 @@
+useDynLib(fRLR, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+import(RcppGSL)
