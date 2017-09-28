@@ -1,4 +1,4 @@
-# fRLR
+# fRLR![](https://travis-ci.org/szcf-weiya/fRLR.svg?branch=master)
 
 ## Introduction
 
