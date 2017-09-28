@@ -201,7 +201,7 @@ Again, we obtain the same results by different methods.
 
 The main aim of this new method is to reduce the computation cost. Now let's compare its speed with the simple-loop method.
 
-We can obtain the following time cost for $99\times 100/2=4950$ linear regressions.
+We can obtain the following time cost for $499\times 500/2=124750$ linear regressions.
 
 
 <<echo=TRUE>>=

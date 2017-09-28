@@ -5,3 +5,5 @@
 README.md
 LICENSE
 .travis.yml
+aclocal.m4
+configure.ac.old
