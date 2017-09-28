@@ -36,12 +36,12 @@ Lijun Wang
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \examples{
-# library(fRLR)
-# set.seed(123)
-# X = matrix(rnorm(50), 10, 5)
-# Y = rnorm(10)
-# COV = matrix(rnorm(40), 10, 4)
-# frlr1(X, Y, COV)
+library(fRLR)
+set.seed(123)
+X = matrix(rnorm(50), 10, 5)
+Y = rnorm(10)
+COV = matrix(rnorm(40), 10, 4)
+frlr1(X, Y, COV)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
