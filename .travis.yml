@@ -2,7 +2,7 @@ language: r
 sudo: true
 cache: packages
 apt_packages:
-  - libgsl0ldbl
+  - gsl-bin
 before_install:
   - chmod +x configure
   - chmod +x cleanup
