@@ -2,7 +2,7 @@ dnl package name and version
 AC_INIT([fRLR], 1.0)
 
 dnl check gsl
-PKG_CHECK_MODULES(GSL, [gsl >= 1.6], [HAVEGSL="yes"], [HAVEGSL="no"])
+PKG_CHECK_MODULES([GSL], [gsl >= 1.6], [HAVEGSL="yes"], [HAVEGSL="no"])
 if test "$HAVEGSL" = "yes"; then
    echo "GSL has been found."
    LIBS=$GSL_LIBS
