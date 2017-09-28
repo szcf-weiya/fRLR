@@ -1,18 +1,14 @@
 dnl package name and version
 AC_INIT([fRLR], 1.0)
 
-dnl check gsl lib
-: ${GSL_LIBS=`gsl-config --libs`}
-if test -z "${GSL_LIBS}"; then
-  echo "could find not lgsl and lgslcblas"
-  exit 1
-fi
-
-dnl check gsl include
-: ${GSL_CFLAGS=`gsl-config --cflags`}
-if test -z "${GSL_CFLAGS}"; then
-  echo "could not find the cflags of gsl"
-  exit 1
+dnl check gsl
+PKG_CHECK_MODULES([GSL], [gsl >= 1.6], [HAVEGSL="yes"], [HAVEGSL="no"])
+if test "$HAVEGSL" = "yes"; then
+   echo "GSL has been found."
+   LIBS=$GSL_LIBS
+else
+   AC_MSG_ERROR([Cannot find GNU Scientific Library >= 1.6, please install it firstly.])
+   exit 1
 fi
 
 dnl check openmp.h
