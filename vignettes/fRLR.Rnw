@@ -207,13 +207,13 @@ Again, we obtain the same results by different methods.
 
 The main aim of this new method is to reduce the computation cost. Now let's compare its speed with the simple-loop method.
 
-We can obtain the following time cost for $499\times 500/2=124750$ linear regressions.
+We can obtain the following time cost for $99\times 100/2=4950$ linear regressions.
 
 
 <<echo=TRUE>>=
 library(fRLR)
 set.seed(123)
-n = 10
+n = 100
 X = matrix(rnorm(10*n), 10, n)
 Y = rnorm(10)
 COV = matrix(rnorm(40), 10, 4)
