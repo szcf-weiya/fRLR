@@ -25,7 +25,9 @@ for (i in 1:n)
 }
 ```
 
-However, it is not efficient in that situation. Due to the same variables, there are some same calculations among different regressions. In order to reduce the cost of computation, I write this `fRLR` package.
+However, it is not efficient in that situation. Due to the same variables, there are some same calculations among different regressions. In order to reduce the cost of computation, I write this `fRLR` package which avoiding to repeat the same calculations. See more details in my [blog](https://stats.hohoweiya.xyz//regression/2017/09/26/An-R-Package-Fit-Repeated-Linear-Regressions/), where I present the whole mathematical formula.
+
+
 
 Let me take a simulation example to show how to use this R package.
 
