@@ -1,11 +1,15 @@
 language: r
 sudo: true
 cache: packages
+r_packages:
+  - covr
 apt_packages:
   - libgsl0-dev
 before_install:
   - chmod +x configure
   - chmod +x cleanup
+after_success:
+  - Rscript -e 'library(covr); codecov()'
 r:
   - oldrel
   - release
