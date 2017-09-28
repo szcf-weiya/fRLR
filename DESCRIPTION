@@ -1,6 +1,7 @@
 Package: fRLR
 Type: Package
 Title: Fit Repeated Linear Regressions
+SystemRequirements: GNU Scientific Library (GSL). Note: users should have GSL installed.
 Version: 1.0
 Date: 2017-09-26
 Author: Lijun Wang [aut, cre, cph]
