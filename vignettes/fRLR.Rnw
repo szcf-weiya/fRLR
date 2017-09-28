@@ -1,3 +1,9 @@
+%\VignetteIndexEntry{fRLR}
+%\VignetteDepends{}
+%\VignetteKeywords{Repeated Linear Regressions}
+%\VignettePackage{fRLR}
+
+
 \documentclass[11pt]{article}
 
 \usepackage{amsmath}
@@ -207,7 +213,7 @@ We can obtain the following time cost for $499\times 500/2=124750$ linear regres
 <<echo=TRUE>>=
 library(fRLR)
 set.seed(123)
-n = 500
+n = 10
 X = matrix(rnorm(10*n), 10, n)
 Y = rnorm(10)
 COV = matrix(rnorm(40), 10, 4)
