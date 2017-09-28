@@ -7,7 +7,8 @@ if test "$HAVEGSL" = "yes"; then
    echo "GSL has been found."
    LIBS=$GSL_LIBS
 else
-   AC_MSG_ERROR([Cannot find GNU Scientific Library >= 1.6])
+   AC_MSG_ERROR([Cannot find GNU Scientific Library >= 1.6, please install it firstly.])
+   exit 1
 fi
 
 dnl check openmp.h

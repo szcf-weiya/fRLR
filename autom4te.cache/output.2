@@ -2188,7 +2188,8 @@ if test "$HAVEGSL" = "yes"; then
    echo "GSL has been found."
    LIBS=$GSL_LIBS
 else
-   as_fn_error $? "Cannot find GNU Scientific Library >= 1.6" "$LINENO" 5
+   as_fn_error $? "Cannot find GNU Scientific Library >= 1.6, please install it firstly." "$LINENO" 5
+   exit 1
 fi
 
 ac_ext=c
