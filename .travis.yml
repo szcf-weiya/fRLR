@@ -4,5 +4,5 @@ cache: packages
 apt_packages:
   - libgsl0ldbl
 before_install:
-  chmod +x configure
-  chmod +x cleanup
+  - chmod +x configure
+  - chmod +x cleanup
