@@ -6,3 +6,7 @@ apt_packages:
 before_install:
   - chmod +x configure
   - chmod +x cleanup
+r:
+  - oldrel
+  - release
+  - devel
