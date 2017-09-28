@@ -96,4 +96,9 @@ As you can see, `fRLR` can speed this task significantly.
 
 ## Install Instructions
 
-You'd better install this package on Linux or Mac on which perfectly support the GNU scientific library. Of course, you can still this package on windows if you setup your GSL environment, and I opened a repository [GSL](https://github.com/szcf-weiya/GSLwin) where you can find solutions to install GSL on windows.
+You'd better install this package on Linux or Mac, because they perfectly support the GNU scientific library (GSL). Of course, you can still this package on windows if you setup your GSL environment, and I opened a repository [GSL](https://github.com/szcf-weiya/GSLwin) where you can find solutions to install GSL on windows, although it might be cumbersome.
+
+If GSL has been installed on your computer, you can install the package by the following command
+```
+devtools::install_github('szcf-weiya/fRLR')
+```
