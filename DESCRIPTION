@@ -6,9 +6,8 @@ Version: 1.0
 Date: 2017-09-26
 Author: Lijun Wang [aut, cre, cph]
 Maintainer: Lijun Wang <szcfweiya@gmail.com>
-Description: When fitting a set of linear regressions which have some same variables, we can separate the matrix and reduce the computation cost. This package aims to fit a set of repeated linear regressions faster.
+Description: When fitting a set of linear regressions which have some same variables, we can separate the matrix and reduce the computation cost. This package aims to fit a set of repeated linear regressions faster. More details can be found in this blog Lijun Wang (2017) <https://stats.hohoweiya.xyz//regression/2017/09/26/An-R-Package-Fit-Repeated-Linear-Regressions/>.
 License: GPL (>= 2)
 URL: https://stats.hohoweiya.xyz//regression/2017/09/26/An-R-Package-Fit-Repeated-Linear-Regressions/
 Imports: Rcpp (>= 0.12.12)
 LinkingTo: Rcpp
-Suggests: testthat
