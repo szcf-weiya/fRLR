@@ -1,7 +1,7 @@
 # fRLR
 
 [![](https://travis-ci.org/szcf-weiya/fRLR.svg?branch=master)](https://travis-ci.org/szcf-weiya/fRLR)
-[![](http://cranlogs.r-pkg.org/badges/fRLR)](http://cran.rstudio.com/web/packages/fRLR/index.html)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/fRLR)](http://cran.rstudio.com/web/packages/fRLR/index.html)
 ## Introduction
 
 This R package aims to fit *Repeated Linear Regressions* in which there are some same terms.
