@@ -5,6 +5,10 @@ frlr1 <- function(R_X, R_Y, R_COV) {
     .Call(`_fRLR_frlr1`, R_X, R_Y, R_COV)
 }
 
+frlr <- function(R_X, R_Y, R_COV) {
+    .Call(`_fRLR_frlr`, R_X, R_Y, R_COV)
+}
+
 frlr2 <- function(R_X, R_idx1, R_idx2, R_Y, R_COV) {
     .Call(`_fRLR_frlr2`, R_X, R_idx1, R_idx2, R_Y, R_COV)
 }

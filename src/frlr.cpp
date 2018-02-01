@@ -206,6 +206,166 @@ Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
 }
 
 //[[Rcpp::export]]
+Rcpp::List frlr(SEXP R_X, SEXP R_Y, SEXP R_COV)
+{
+  // convert data type
+  Rcpp::NumericVector X(R_X);
+  Rcpp::NumericVector Y(R_Y);
+  Rcpp::NumericVector COV(R_COV);
+  
+  int nrow = Y.size();
+  int nX = X.size();
+  int ncol = nX/nrow;
+  
+  int nCOV = COV.size();
+  int COV_COL = nCOV/nrow;
+  
+  int col_b = COV_COL+1;
+  gsl_matrix *b = gsl_matrix_alloc(nrow, col_b);
+  gsl_matrix *B = gsl_matrix_alloc(COV_COL+1, col_b);
+  gsl_matrix *invB = gsl_matrix_alloc(COV_COL+1, col_b);
+  
+  gsl_vector *covariate_vec = gsl_vector_alloc(nrow);
+  for (int ip = 0; ip < COV_COL; ip++)
+  {
+    get_col_from_r_matrix(COV, nrow, COV_COL, ip, covariate_vec);
+    gsl_matrix_set_col(b, 1+ip, covariate_vec);
+  }
+  gsl_vector_free(covariate_vec);
+  
+  gsl_vector *Yv = gsl_vector_alloc(nrow);
+  get_col_from_r_matrix(Y, nrow, 1, 0, Yv);
+  
+  // intercept
+  gsl_vector *x0 = gsl_vector_alloc(nrow);
+  gsl_vector_set_all(x0, 1);
+  gsl_matrix_set_col(b, 0, x0);
+  
+  // degree of freedom
+  int df = nrow - COV_COL - 1 - 1;
+  
+  vector<int> r1;
+  vector<int> r2;
+  vector<double> r_p;
+  
+  gsl_permutation *permutation_B = gsl_permutation_alloc(B->size1);
+  int status;
+  
+  // B = b'b
+  gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, b, b, 0.0, B);
+  
+  // inv(B) by LU decomposition
+  gsl_linalg_LU_decomp(B, permutation_B, &status);
+  gsl_linalg_LU_invert(B, permutation_B, invB);
+  for (int i = 0; i < ncol; i++)
+  {
+    # pragma omp parallel for schedule(dynamic) // faster!!!
+    for (int j = i+1; j < ncol; j++)
+    {
+      // the identical terms
+      gsl_vector *x1 = gsl_vector_alloc(nrow);
+      get_col_from_r_matrix(X, nrow, ncol, i, x1);
+      gsl_vector *x1tmp = gsl_vector_alloc(nrow);
+      get_col_from_r_matrix(X, nrow, ncol, j, x1tmp);
+      gsl_vector_mul(x1, x1tmp);
+      gsl_vector_free(x1tmp);
+      
+      gsl_vector *V_1i = gsl_vector_alloc(col_b);
+      gsl_vector *invB_mul_V_1i = gsl_vector_alloc(col_b);
+      double B_1, D;
+      double invXX_11;
+      gsl_matrix *invXX_22 = gsl_matrix_calloc(col_b, col_b); // all elements set to 0
+      gsl_vector *invXX_21 = gsl_vector_alloc(col_b);
+      double XY_1;
+      gsl_vector *XY_2 = gsl_vector_alloc(col_b);
+      double beta_1;
+      gsl_vector *beta_2 = gsl_vector_alloc(col_b);
+      gsl_vector *Yhat = gsl_vector_alloc(nrow);
+      double rss, zscore1, pvalue1;
+      
+      // a
+      double a;
+      gsl_blas_ddot(x1, x1, &a);
+      
+      // V_1i = b'a_1i
+      gsl_blas_dgemv(CblasTrans, 1.0, b, x1, 0.0, V_1i);
+      
+      // invB_mul_V_1i
+      gsl_blas_dgemv(CblasNoTrans, 1.0, invB, V_1i, 0.0, invB_mul_V_1i);
+      
+      // B_1 = V_1i' mul invB mul V_1i
+      gsl_blas_ddot(invB_mul_V_1i, V_1i, &B_1);
+      
+      // D = I - B_1 * invA_1i
+      D =  a - B_1;
+      
+      // invXX_11
+      invXX_11 = 1/a + 1/a*B_1/D;
+      
+      
+      // invXX_22
+      gsl_matrix_memcpy(invXX_22, invB);
+      //gsl_blas_dsyr(CblasUpper, -1.0/D, invB_mul_V_1i, invXX_22);
+      gsl_blas_dger(1.0/D, invB_mul_V_1i, invB_mul_V_1i, invXX_22);
+      
+      // invXX_21
+      gsl_vector_memcpy(invXX_21, invB_mul_V_1i);
+      gsl_vector_scale(invXX_21, -1.0/D);
+      
+      // X'Y
+      gsl_blas_ddot(x1, Yv, &XY_1);
+      //gsl_blas_dgemv(CblasTrans, 1.0, x1, Yv, 0.0, XY_1);
+      gsl_blas_dgemv(CblasTrans, 1.0, b, Yv, 0.0, XY_2);
+      
+      // beta
+      double tmp;
+      gsl_blas_ddot(invXX_21, XY_2, &tmp);
+      beta_1 = invXX_11*XY_1 + tmp;
+      
+      //gsl_blas_dgemv(CblasNoTrans, 1.0, invXX_21, XY_1, 0.0, beta_2);
+      gsl_vector_memcpy(beta_2, invXX_21);
+      gsl_vector_scale(beta_2, XY_1);
+      
+      gsl_blas_dgemv(CblasNoTrans, 1.0, invXX_22, XY_2, 1.0, beta_2);
+      
+      // RSS
+      gsl_vector_memcpy(Yhat, x1);
+      gsl_blas_dgemv(CblasNoTrans, 1.0, b, beta_2, beta_1, Yhat);
+      
+      gsl_vector_sub(Yhat, Yv);
+      
+      gsl_blas_ddot(Yhat, Yhat, &rss);
+      
+      // zscore
+      zscore1 = beta_1/(sqrt(rss/df*invXX_11));
+      pvalue1 = 2*(zscore1 < 0 ? (1 - gsl_cdf_tdist_P(-zscore1, df)) : (1 - gsl_cdf_tdist_P(zscore1, df)));
+      
+      gsl_vector_free(x1);
+      gsl_vector_free(XY_2);
+      gsl_vector_free(beta_2);
+      gsl_vector_free(Yhat);
+      gsl_matrix_free(invXX_22);
+      gsl_vector_free(invXX_21);
+      gsl_vector_free(V_1i);
+      gsl_vector_free(invB_mul_V_1i);
+      #pragma omp critical
+      {
+        r1.push_back(i);
+        r2.push_back(j);
+        r_p.push_back(pvalue1);
+      }
+    }
+  }
+  Rcpp::DataFrame output = Rcpp::DataFrame::create(Rcpp::Named("r1") = r1,
+                                                   Rcpp::Named("r2") = r2,
+                                                   Rcpp::Named("r.p.value") = r_p);
+  
+  gsl_vector_free(x0);
+  return output;
+}
+
+
+//[[Rcpp::export]]
 Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
 {
   // gsl_matrix is row-major order

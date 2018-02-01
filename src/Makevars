@@ -1,0 +1,7 @@
+GSL_CFLAGS = -I/usr/local/include
+GSL_LIBS = -L/usr/local/lib -lgsl -lgslcblas -lm
+OPENMP_CFLGAS = -fopenmp
+
+
+PKG_CPPFLAGS = -I/usr/local/include -fopenmp
+PKG_LIBS = -L/usr/local/lib -lgsl -lgslcblas -lm
