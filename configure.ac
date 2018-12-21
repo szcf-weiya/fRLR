@@ -1,5 +1,5 @@
 dnl package name and version
-AC_INIT([fRLR], 1.0)
+AC_INIT([fRLR], 1.1)
 
 dnl check gsl lib
 #: ${GSL_LIBS=`gsl-config --libs`}
@@ -23,19 +23,9 @@ else
    AC_MSG_ERROR([gsl-config not found, please make sure you have installed GSL.])
 fi
 
-dnl check openmp.h
-AC_CHECK_HEADER(omp.h)
-if test "${ac_cv_header_omp_h}" = yes; then
-  OPENMP_CFLAGS="-fopenmp"
-else
-  OPENMP_CFLAGS=""
-  echo "Not find openmp.h"
-fi
-
 
 AC_SUBST(GSL_LIBS)
 AC_SUBST(GSL_CFLAGS)
-AC_SUBST(OPENMP_CFLAGS)
 
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT
