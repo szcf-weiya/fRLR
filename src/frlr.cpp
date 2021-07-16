@@ -55,7 +55,22 @@ int get_col_from_r_matrix(Rcpp::NumericVector m, size_t nrow, size_t ncol, size_
   return 1;
 }
 
-//[[Rcpp::export]]
+//' Fit Repeated Linear Regressions with One Variable
+//' 
+//' Fit a set of linear regressions which differ only in one variable.
+//'
+//' @param R_X the observation matrix
+//' @param R_Y the response
+//' @param R_COV common variables
+//' @return the fitting results for each regression.
+//' @examples
+//' set.seed(123)
+//' X = matrix(rnorm(50), 10, 5)
+//' Y = rnorm(10)
+//' COV = matrix(rnorm(40), 10, 4)
+//' frlr1(X, Y, COV)
+//' @export
+// [[Rcpp::export]]
 Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
 {
   // convert data type
@@ -205,7 +220,26 @@ Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
   return output;
 }
 
-//[[Rcpp::export]]
+//' Fit Repeated Linear Regressions with Two Variables
+//'
+//' Fit a set of linear regressions which differ only in two variables.
+//'
+//' @param R_X the observation matrix
+//' @param R_idx1 the first identical feature
+//' @param R_idx2 the second identical feature
+//' @param R_Y the response variable
+//' @param R_COV common variables
+//' @return the fitting results for each regression.
+//' @examples
+//' set.seed(123)
+//' X = matrix(rnorm(50), 10, 5)
+//' Y = rnorm(10)
+//' COV = matrix(rnorm(40), 10, 4)
+//' idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)
+//' idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
+//' frlr2(t(X), idx1, idx2, Y, t(COV))
+//' @export 
+// [[Rcpp::export]]
 Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
 {
   // gsl_matrix is row-major order

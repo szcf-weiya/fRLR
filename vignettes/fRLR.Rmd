@@ -1,36 +1,28 @@
-%\VignetteIndexEntry{fRLR}
-%\VignetteDepends{}
-%\VignetteKeywords{Repeated Linear Regressions}
-%\VignettePackage{fRLR}
+---
+title: "fRLR: Fit Repeated Linear Regressions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{fRLR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
-\documentclass[11pt]{article}
+```{r setup}
+library(fRLR)
+```
 
-\usepackage{amsmath}
-\usepackage[authoryear,round]{natbib}
-\usepackage{hyperref}
-\usepackage{geometry}
-\geometry{verbose,letterpaper,tmargin=20mm,bmargin=20mm,lmargin=2.5cm,rmargin=2.5cm}
-\SweaveOpts{echo=FALSE}
+## Introduction
 
-\begin{document}
+This R package aims to fit **Repeated Linear Regressions** in which there are some same terms.
 
-\title{\bf fRLR package: Fit Repeated Linear Regressions}
-
-\author{Lijun Wang}
-
-\maketitle
-
-
-\tableofcontents
-
-\clearpage
-
-\section{Introduction}
-
-This R package aims to fit \emph{Repeated Linear Regressions} in which there are some same terms.
-
-\section{An Example}
+## An Example
 
 Let's start with the simplest situation, we want to fit a set of regressions which only differ in one variable. Specifically, denote the response variable as $y$, and these regressions are as follows.
 
@@ -45,11 +37,11 @@ $$
 
 where $cov_i, i=1,\ldots, m$ are the same variables among these regressions.
 
-\section{Ideas}
+## Ideas
 
 Intuitively, we can finish this task by using a simple loop.
 
-<<eval=FALSE>>=
+```{r eval=FALSE}
 model = vector(mode='list', length=n)
 for (i in 1:n)
 {
@@ -57,7 +49,7 @@ for (i in 1:n)
   model[[i]] = lm(y~x)
   ...
 }
-@
+```
 
 However, it is not efficient in that situation. As we all know, in the linear regression, the main goal is to estimate the parameter $\beta$. And we have
 
@@ -69,7 +61,7 @@ where $X$ is the design matrix and $Y$ is the observation of response variable.
 
 It is obvious that there are some same elements in the design matrix, and the larger $m$ is, the more elements are the same. So I want to reduce the cost of computation by separating the same part in the design matrix.
 
-\section{Method}
+## Method
 
 For the above example, the design matrix can be denoted as $X=(x, cov)$. If we consider intercept, it also can be seen as the same variable among these regression, so it can be included in $cov$ naturally. Then we have
 
@@ -90,7 +82,7 @@ v& B
 $$
 
 
-\textbf{Woodbury formula} tells us
+**Woodbury formula** tells us
 
 $$
 (A+UCV)^{-1}=A^{-1}-A^{-1}U(C^{-1}+VA^{-1}U)^{-1}VA^{-1}
@@ -148,13 +140,12 @@ $$
 
 Notice that matrix $B$ is the same for all regression, the identical terms for each regression are just $a$ and $v$, which are very easy to calculate. So theoretically, we can reduce the cost of computation significantly.
 
-\section{Test}
+## Test
 
 Now test two simulation examples by using the functions in this package.
 
-<<echo=TRUE, print=TRUE>>=
+```{r}
 ## use fRLR package
-library(fRLR)
 set.seed(123)
 X = matrix(rnorm(50), 10, 5)
 Y = rnorm(10)
@@ -172,14 +163,13 @@ for (i in 1:ncol(X))
   res = rbind(res, tmp)
 }
 res
-@
+```
 
 As we can see in the above output, these p-values for the identical variable in each regression are equal betwwen two methods.
 
 Similarly, we can test another example
 
-<<echo=TRUE, print=TRUE>>=
-library(fRLR)
+```{r}
 set.seed(123)
 X = matrix(rnorm(50), 10, 5)
 Y = rnorm(10)
@@ -199,19 +189,17 @@ for (i in 1:length(idx1))
   tmp = c(idx1[i], idx2[i], summary(model)$coefficients[2,4], summary(model)$coefficients[3,4])
   res = rbind(res, tmp)
 }
-@
+```
 
 Again, we obtain the same results by different methods.
 
-\section{Computation Performance}
+## Computation Performance
 
 The main aim of this new method is to reduce the computation cost. Now let's compare its speed with the simple-loop method.
 
 We can obtain the following time cost for $99\times 100/2=4950$ linear regressions.
 
-
-<<echo=TRUE>>=
-library(fRLR)
+```{r}
 set.seed(123)
 n = 100
 X = matrix(rnorm(10*n), 10, n)
@@ -240,6 +228,4 @@ simpleLoop <- function()
 }
 
 system.time(simpleLoop())
-@
-
-\end{document}
+```

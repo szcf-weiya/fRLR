@@ -4,3 +4,9 @@
 .Ruserdata
 *.swp
 *.vscode/
+inst/doc
+src/*.o
+src/*.so
+config.log
+config.status
+src/Makevars
