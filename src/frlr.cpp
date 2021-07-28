@@ -48,7 +48,20 @@ int get_col_from_r_matrix(Rcpp::NumericVector m, size_t nrow, size_t ncol, size_
   {
     return 0;
   }
-  for(int j = 0; j < nrow; j++)
+  for(size_t j = 0; j < nrow; j++)
+  {
+    gsl_vector_set(v, j, m[i*nrow+j]);
+  }
+  return 1;
+}
+
+int get_col_from_matrix(const vector<double> &m, size_t nrow, size_t ncol, size_t i, gsl_vector* v)
+{
+  if (ncol <= i)
+  {
+    return 0;
+  }
+  for(size_t j = 0; j < nrow; j++)
   {
     gsl_vector_set(v, j, m[i*nrow+j]);
   }
@@ -56,7 +69,7 @@ int get_col_from_r_matrix(Rcpp::NumericVector m, size_t nrow, size_t ncol, size_
 }
 
 //' Fit Repeated Linear Regressions with One Variable
-//' 
+//'
 //' Fit a set of linear regressions which differ only in one variable.
 //'
 //' @param R_X the observation matrix
@@ -74,9 +87,11 @@ int get_col_from_r_matrix(Rcpp::NumericVector m, size_t nrow, size_t ncol, size_
 Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
 {
   // convert data type
-  Rcpp::NumericVector X(R_X);
+  Rcpp::NumericVector rX(R_X);
   Rcpp::NumericVector Y(R_Y);
   Rcpp::NumericVector COV(R_COV);
+
+  vector<double> X = Rcpp::as<vector<double> >(rX);
 
   int nrow = Y.size();
   int nX = X.size();
@@ -109,8 +124,8 @@ Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
   // degree of freedom
   int df = nrow - COV_COL - 1 - 1;
 
-  vector<int> r;
-  vector<double> r_p;
+  Rcpp::IntegerVector r(ncol);
+  Rcpp::NumericVector r_p(ncol);
 
   gsl_permutation *permutation_B = gsl_permutation_alloc(B->size1);
   int status;
@@ -127,7 +142,7 @@ Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
   {
     // the identical terms
     gsl_vector *x1 = gsl_vector_alloc(nrow);
-    get_col_from_r_matrix(X, nrow, ncol, j, x1);
+    get_col_from_matrix(X, nrow, ncol, j, x1);
 
     gsl_vector *V_1i = gsl_vector_alloc(col_b);
     gsl_vector *invB_mul_V_1i = gsl_vector_alloc(col_b);
@@ -207,16 +222,18 @@ Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
     gsl_vector_free(invXX_21);
     gsl_vector_free(V_1i);
     gsl_vector_free(invB_mul_V_1i);
-    #pragma omp critical
-    {
-      r.push_back(j);
-      r_p.push_back(pvalue1);
-    }
+    r[j] = j;
+    r_p[j] = pvalue1;
   }
   Rcpp::DataFrame output = Rcpp::DataFrame::create(Rcpp::Named("r") = r,
                                                     Rcpp::Named("r.p.value") = r_p);
 
   gsl_vector_free(x0);
+  gsl_vector_free(Yv);
+  gsl_matrix_free(b);
+  gsl_matrix_free(B);
+  gsl_matrix_free(invB);
+  gsl_permutation_free(permutation_B);
   return output;
 }
 
@@ -238,18 +255,20 @@ Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
 //' idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)
 //' idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
 //' frlr2(t(X), idx1, idx2, Y, t(COV))
-//' @export 
+//' @export
 // [[Rcpp::export]]
 Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
 {
   // gsl_matrix is row-major order
 
   // convert data type
-  Rcpp::NumericVector X(R_X);
+  Rcpp::NumericVector rX(R_X);
   Rcpp::NumericVector Y(R_Y);
   Rcpp::NumericVector COV(R_COV);
   Rcpp::IntegerVector idx1(R_idx1);
   Rcpp::IntegerVector idx2(R_idx2);
+
+  vector<double> X = Rcpp::as<vector<double> > (rX);
 
   int nrow = Y.size();
   int nX = X.size();
@@ -284,8 +303,12 @@ Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
   int df = nrow - COV_COL - 2 - 1;
 
 
-  vector<int> r1, r2;
-  vector<double> r1_p, r2_p;
+  // vector<int> r1, r2;
+  // vector<double> r1_p, r2_p;
+  Rcpp::IntegerVector r1(n);
+  Rcpp::IntegerVector r2(n);
+  Rcpp::NumericVector r1_p(n);
+  Rcpp::NumericVector r2_p(n);
 
   gsl_permutation *permutation_B = gsl_permutation_alloc(B->size1);
   int status;
@@ -303,9 +326,9 @@ Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
     // the identical terms
     gsl_vector *x1 = gsl_vector_alloc(nrow);
     gsl_vector *x2 = gsl_vector_alloc(nrow);
-    get_col_from_r_matrix(X, nrow, ncol, idx1[j]-1, x1);
-    get_col_from_r_matrix(X, nrow, ncol, idx2[j]-1, x2);
 
+    get_col_from_matrix(X, nrow, ncol, idx1[j]-1, x1);
+    get_col_from_matrix(X, nrow, ncol, idx2[j]-1, x2);
     double A_1i_11, A_1i_12, A_1i_22;
     double a11, a12, a21, a22, a_det;
     gsl_matrix *invA_1i = gsl_matrix_alloc(2, 2);
@@ -373,7 +396,6 @@ Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
     gsl_matrix_set(invD, 1, 1, a11/a_det);
     gsl_matrix_set(invD, 1, 0, -a21/a_det);
     gsl_matrix_set(invD, 0, 1, -a12/a_det);
-
     // invXX_11
     gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, invA_1i, B_1, 0.0, m_tmp3);
     gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, m_tmp3, invD, 0.0, m_tmp); // Do not replace m_tmp with m_tmp3 !!
@@ -443,6 +465,10 @@ Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
       r1_p.push_back(pvalue1);
       r2_p.push_back(pvalue2);
     }
+    r1[j] = idx1[j];
+    r2[j] = idx2[j];
+    r1_p[j] = pvalue1;
+    r2_p[j] = pvalue2;
   }
   Rcpp::DataFrame output = Rcpp::DataFrame::create(Rcpp::Named("r1") = r1,
                                                     Rcpp::Named("r2") = r2,

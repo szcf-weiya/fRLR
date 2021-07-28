@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // frlr1
 Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV);
 RcppExport SEXP _fRLR_frlr1(SEXP R_XSEXP, SEXP R_YSEXP, SEXP R_COVSEXP) {

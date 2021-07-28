@@ -2,7 +2,7 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' Fit Repeated Linear Regressions with One Variable
-#' 
+#'
 #' Fit a set of linear regressions which differ only in one variable.
 #'
 #' @param R_X the observation matrix
@@ -38,7 +38,7 @@ frlr1 <- function(R_X, R_Y, R_COV) {
 #' idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)
 #' idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
 #' frlr2(t(X), idx1, idx2, Y, t(COV))
-#' @export 
+#' @export
 frlr2 <- function(R_X, R_idx1, R_idx2, R_Y, R_COV) {
     .Call('_fRLR_frlr2', PACKAGE = 'fRLR', R_X, R_idx1, R_idx2, R_Y, R_COV)
 }
