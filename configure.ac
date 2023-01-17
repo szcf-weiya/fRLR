@@ -24,6 +24,7 @@ else
 fi
 
 dnl check openmp.h
+AC_PROG_CC([cc cl gcc])
 AC_CHECK_HEADER(omp.h)
 if test "${ac_cv_header_omp_h}" = yes; then
   OPENMP_CFLAGS="-fopenmp"
