@@ -254,7 +254,7 @@ Rcpp::List frlr1(SEXP R_X, SEXP R_Y, SEXP R_COV)
 //' COV = matrix(rnorm(40), 10, 4)
 //' idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)
 //' idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
-//' frlr2(t(X), idx1, idx2, Y, t(COV))
+//' frlr2(X, idx1, idx2, Y, COV)
 //' @export
 // [[Rcpp::export]]
 Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
@@ -458,13 +458,6 @@ Rcpp::List frlr2(SEXP R_X, SEXP R_idx1, SEXP R_idx2, SEXP R_Y, SEXP R_COV)
     gsl_matrix_free(m_tmp2);
     gsl_matrix_free(m_tmp3);
     gsl_matrix_free(m_tmp4);
-    #pragma omp critical
-    {
-      r1.push_back(idx1[j]);
-      r2.push_back(idx2[j]);
-      r1_p.push_back(pvalue1);
-      r2_p.push_back(pvalue2);
-    }
     r1[j] = idx1[j];
     r2[j] = idx2[j];
     r1_p[j] = pvalue1;

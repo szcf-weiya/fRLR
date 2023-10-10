@@ -37,7 +37,7 @@ frlr1 <- function(R_X, R_Y, R_COV) {
 #' COV = matrix(rnorm(40), 10, 4)
 #' idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)
 #' idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
-#' frlr2(t(X), idx1, idx2, Y, t(COV))
+#' frlr2(X, idx1, idx2, Y, COV)
 #' @export
 frlr2 <- function(R_X, R_idx1, R_idx2, R_Y, R_COV) {
     .Call('_fRLR_frlr2', PACKAGE = 'fRLR', R_X, R_idx1, R_idx2, R_Y, R_COV)
