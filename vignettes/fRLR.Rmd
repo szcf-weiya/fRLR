@@ -150,7 +150,7 @@ set.seed(123)
 X = matrix(rnorm(50), 10, 5)
 Y = rnorm(10)
 COV = matrix(rnorm(40), 10, 4)
-frlr1(X, Y, COV)
+frlr1(X, Y, COV, num_threads = 1)
 
 ## use simple loop
 res = matrix(nrow = 0, ncol = 2)
@@ -178,7 +178,7 @@ COV = matrix(rnorm(40), 10, 4)
 idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)
 idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
 
-frlr2(X, idx1, idx2, Y, COV)
+frlr2(X, idx1, idx2, Y, COV, num_threads = 1)
 
 res = matrix(nrow=0, ncol=4)
 for (i in 1:length(idx1))
@@ -212,7 +212,7 @@ id = combn(n, 2)
 idx1 = id[1, ]
 idx2 = id[2, ]
 
-system.time(frlr2(X, idx1, idx2, Y, COV))
+system.time(frlr2(X, idx1, idx2, Y, COV, num_threads = 1))
 
 simpleLoop <- function()
 {
@@ -229,3 +229,5 @@ simpleLoop <- function()
 
 system.time(simpleLoop())
 ```
+
+We can even speed up by passing `num_threads = -1` (use all possible threads).

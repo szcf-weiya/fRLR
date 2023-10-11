@@ -4,7 +4,7 @@
 \alias{frlr1}
 \title{Fit Repeated Linear Regressions with One Variable}
 \usage{
-frlr1(R_X, R_Y, R_COV)
+frlr1(R_X, R_Y, R_COV, num_threads = -1L)
 }
 \arguments{
 \item{R_X}{the observation matrix}
@@ -12,6 +12,8 @@ frlr1(R_X, R_Y, R_COV)
 \item{R_Y}{the response}
 
 \item{R_COV}{common variables}
+
+\item{num_threads}{number of threads for openmp. If it is -1 (default), it will use all possible threads.}
 }
 \value{
 the fitting results for each regression.

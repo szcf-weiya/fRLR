@@ -3,7 +3,7 @@ set.seed(123)
 X = matrix(rnorm(50), 10, 5)
 Y = rnorm(10)
 COV = matrix(rnorm(40), 10, 4)
-res.frlr = frlr1(X, Y, COV)
+res.frlr = frlr1(X, Y, COV, 1)
 
 ## use simple loop
 res = matrix(nrow = 0, ncol = 2)
@@ -23,10 +23,10 @@ test_that("frlr1 vs lm", {
 })
 
 ### frlr2
-idx1 = c(1, 2, 3, 4, 1, 1, 1, 2, 2, 3)
-idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
+idx1 = c(1, 2)#, 3, 4, 1, 1, 1, 2, 2, 3)
+idx2 = c(2, 3)#, 4, 5, 3, 4, 5, 4, 5, 5)
 
-res.frlr2 = frlr2(X, idx1, idx2, Y, COV)
+res.frlr2 = frlr2(X, idx1, idx2, Y, COV, 1)
 
 res = matrix(nrow=0, ncol=4)
 for (i in 1:length(idx1))

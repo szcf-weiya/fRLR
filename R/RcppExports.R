@@ -8,6 +8,7 @@
 #' @param R_X the observation matrix
 #' @param R_Y the response
 #' @param R_COV common variables
+#' @param num_threads number of threads for openmp. If it is -1 (default), it will use all possible threads.
 #' @return the fitting results for each regression.
 #' @examples
 #' set.seed(123)
@@ -16,8 +17,8 @@
 #' COV = matrix(rnorm(40), 10, 4)
 #' frlr1(X, Y, COV)
 #' @export
-frlr1 <- function(R_X, R_Y, R_COV) {
-    .Call('_fRLR_frlr1', PACKAGE = 'fRLR', R_X, R_Y, R_COV)
+frlr1 <- function(R_X, R_Y, R_COV, num_threads = -1L) {
+    .Call('_fRLR_frlr1', PACKAGE = 'fRLR', R_X, R_Y, R_COV, num_threads)
 }
 
 #' Fit Repeated Linear Regressions with Two Variables
@@ -29,6 +30,7 @@ frlr1 <- function(R_X, R_Y, R_COV) {
 #' @param R_idx2 the second identical feature
 #' @param R_Y the response variable
 #' @param R_COV common variables
+#' @param num_threads number of threads for openmp. If it is -1 (default), it will use all possible threads.
 #' @return the fitting results for each regression.
 #' @examples
 #' set.seed(123)
@@ -39,7 +41,7 @@ frlr1 <- function(R_X, R_Y, R_COV) {
 #' idx2 = c(2, 3, 4, 5, 3, 4, 5, 4, 5, 5)
 #' frlr2(X, idx1, idx2, Y, COV)
 #' @export
-frlr2 <- function(R_X, R_idx1, R_idx2, R_Y, R_COV) {
-    .Call('_fRLR_frlr2', PACKAGE = 'fRLR', R_X, R_idx1, R_idx2, R_Y, R_COV)
+frlr2 <- function(R_X, R_idx1, R_idx2, R_Y, R_COV, num_threads = -1L) {
+    .Call('_fRLR_frlr2', PACKAGE = 'fRLR', R_X, R_idx1, R_idx2, R_Y, R_COV, num_threads)
 }
 
